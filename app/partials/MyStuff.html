@@ -1,14 +1,22 @@
 <div class="row">
     <div class="span5"><h2>My Stuff</h2></div>
     <div class="span5 rightHeaderButtons">
-        <button class="btn">Add Stuff</button>
+        <button id="showAddStuffFormButton" class="btn" ng-click="showAddForm()" ng-hide="!isAddStuffFormHidden">Add Stuff</button>
     </div>
 </div>
 
-<ul class="unstyled stuffList">
-    <li ng:repeat="stuff in stuffList">
-        <h3>{{stuff.title}}</h3>
+<div class="addStuffForm" ng-hide="isAddStuffFormHidden">
+    <h3>Add Stuff</h3>
+    <label for="title">Title</label><input id="title" ng-model="newStuff.title" autofocus="autofocus"/>
+    <label for="description">Description</label>
+    <textarea name="description" id="description" cols="30" rows="10" ng-model="newStuff.description"></textarea><br>
+    <button class="btn btn-primary" ng-click="addStuff()">Add Stuff</button>
+</div>
 
+
+<ul class="unstyled stuffList">
+    <li ng-repeat="stuff in stuffList">
+        <h3>{{stuff.title}}</h3>
         <p>{{stuff.description}}</p>
     </li>
 </ul>

@@ -1,3 +1,12 @@
+log = (t)->
+  console.log(t)
+
+focus = (id)->
+  setTimeout(->
+    $('#'+id).focus()
+  ,100)
+
+
 MyStuffController = ($scope)->
   $scope.stuffList = [
     {
@@ -10,7 +19,19 @@ MyStuffController = ($scope)->
     }
   ]
 
+  $scope.isAddStuffFormHidden = true
+  $scope.showAddForm = ()->
+    $scope.isAddStuffFormHidden = false
+    focus('title')
 
+  $scope.newStuff = {title: "", description: ""}
+  $scope.addStuff = ()->
+    $scope.stuffList.push($scope.newStuff)
+    $scope.newStuff = {title: "", description: ""}
+    $scope.isAddStuffFormHidden = true
+    focus('showAddStuffFormButton')
+
+  focus('showAddStuffFormButton')
 
 MyStuffController.$inject = ['$scope']
 
