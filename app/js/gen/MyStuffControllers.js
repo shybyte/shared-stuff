@@ -22,18 +22,15 @@
       $scope.isAddStuffFormHidden = false;
       return focus('title');
     };
-    $scope.newStuff = {
-      title: "",
-      description: ""
-    };
+    $scope.stuff = new Stuff();
     $scope.addStuff = function() {
-      $scope.newStuff.id = new Date().getTime();
-      $scope.stuffList.push($scope.newStuff);
+      var ns;
+      log($scope.stuff);
+      ns = new Stuff($scope.stuff);
+      log(ns);
+      $scope.stuffList.push(new Stuff($scope.stuff));
       stuffDAO.save($scope.stuffList);
-      $scope.newStuff = {
-        title: "",
-        description: ""
-      };
+      $scope.stuff = new Stuff();
       $scope.isAddStuffFormHidden = true;
       return focus('showAddStuffFormButton');
     };
@@ -43,7 +40,7 @@
   MyStuffController.$inject = ['$scope', 'stuffDAO'];
 
   MyStuffEditController = function($scope, stuffDAO, $routeParams, $location) {
-    $scope.stuff = {};
+    $scope.stuff = new Stuff();
     stuffDAO.getItem($routeParams.id, function(stuff) {
       return $scope.stuff = stuff;
     });

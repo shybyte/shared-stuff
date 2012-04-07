@@ -6,6 +6,7 @@ focus = (id)->
     $('#'+id).focus()
   ,100)
 
+
 MyStuffController = ($scope,stuffDAO)->
   $scope.stuffList = []
   $scope.isAddStuffFormHidden = true
@@ -18,13 +19,15 @@ MyStuffController = ($scope,stuffDAO)->
     $scope.isAddStuffFormHidden = false
     focus('title')
 
-  $scope.newStuff = {title: "", description: ""}
+  $scope.stuff = new Stuff()
 
   $scope.addStuff = ()->
-    $scope.newStuff.id = new Date().getTime();
-    $scope.stuffList.push($scope.newStuff)
+    log($scope.stuff)
+    ns = new Stuff($scope.stuff)
+    log(ns)
+    $scope.stuffList.push(new Stuff($scope.stuff))
     stuffDAO.save($scope.stuffList)
-    $scope.newStuff = {title: "", description: ""}
+    $scope.stuff = new Stuff();
     $scope.isAddStuffFormHidden = true
     focus('showAddStuffFormButton')
 
@@ -32,8 +35,9 @@ MyStuffController = ($scope,stuffDAO)->
 
 MyStuffController.$inject = ['$scope','stuffDAO']
 
+
 MyStuffEditController = ($scope,stuffDAO,$routeParams,$location)->
-  $scope.stuff = {}
+  $scope.stuff = new Stuff()
 
   stuffDAO.getItem($routeParams.id,(stuff)->
     $scope.stuff = stuff

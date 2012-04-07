@@ -4,7 +4,7 @@ describe('MyCtrl1', function(){
   var myCtrl1;
 
   beforeEach(function(){
-    myCtrl1 = new MyCtrl1();
+    myCtrl1 = new MyStuffController({},{list:function(){}});
   });
 
 

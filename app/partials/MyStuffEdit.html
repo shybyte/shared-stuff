@@ -8,8 +8,6 @@
 </div>
 <h2>{{stuff.title}}</h2></div>
 
-<label for="title">Title</label><input id="title" ng-model="stuff.title" ng-model-instant autofocus="autofocus"/>
-<label for="description">Description</label>
-<textarea name="description" id="description" cols="30" rows="10" ng-model="stuff.description"></textarea><br>
+<div ng-include src="'partials/stuff-form.html'">Toll</div>
 
 <button class="btn btn-primary" ng-click="save()">Save</button>
