@@ -12,11 +12,11 @@ h2 {
     text-align: right;
 }
 
-.stuffList li {
+.stuffList > li {
     margin-bottom: 1.5em;
 }
 
-.nav li a{
+.nav > li a{
     /*border: 1px solid #eee;*/
     -webkit-transition: 0.5s ease-out;
 }
@@ -28,11 +28,18 @@ h2 {
     padding: 1em;
     margin-bottom: 1em;
 }
-
-
 .addStuffForm {
     transition: 2s;
     -moz-transition: 2s; /* Firefox 4 */
     -webkit-transition: 2s; /* Safari and Chrome */
     -o-transition: 2s; /* Opera */
+}
+
+.editStuffButton {
+}
+
+.dropdown-menu {
+    right: 0;
+    left: auto;
+    min-width: 100px;
 }

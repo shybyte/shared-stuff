@@ -32,4 +32,25 @@ MyStuffController = ($scope,stuffDAO)->
 
 MyStuffController.$inject = ['$scope','stuffDAO']
 
+MyStuffEditController = ($scope,stuffDAO,$routeParams,$location)->
+  $scope.stuff = {}
+
+  stuffDAO.getItem($routeParams.id,(stuff)->
+    $scope.stuff = stuff
+  )
+
+  $scope.save = ()->
+    stuffDAO.saveItem($scope.stuff)
+    $location.path('/mystuff');
+
+  $scope.delete = ()->
+    if window.confirm("Do you really want to delete this stuff called \"#{$scope.stuff.title}\"?")
+      stuffDAO.deleteItem($scope.stuff.id)
+      $location.path('/mystuff');
+
+MyStuffEditController.$inject = ['$scope','stuffDAO','$routeParams','$location']
+
+
+#export
 this.MyStuffController = MyStuffController
+this.MyStuffEditController = MyStuffEditController
