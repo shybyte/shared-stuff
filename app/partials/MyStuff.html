@@ -13,10 +13,9 @@
     <button class="btn btn-primary" ng-click="addStuff()">Add Stuff</button>
 </div>
 
-
 <ul class="unstyled stuffList">
     <li ng-repeat="stuff in stuffList">
-        <h3>{{stuff.title}}</h3>
+        <h3><a href="#mystuff/{{stuff.title}}">{{stuff.title}}</a></h3>
         <p>{{stuff.description}}</p>
     </li>
 </ul>
