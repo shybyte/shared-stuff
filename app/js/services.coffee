@@ -13,7 +13,7 @@ class LocalStorageDAO
     callback(_.find(@readAllItems(),(it) -> it.id==id));
 
   save: (allItems) ->
-    localStorage.setItem('myStuffList',JSON.stringify(allItems))
+    localStorage.setItem(@key,JSON.stringify(allItems))
 
   saveItem: (item) ->
     items = @readAllItems()
