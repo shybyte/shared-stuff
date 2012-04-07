@@ -1,15 +1,9 @@
 (function() {
   var MyStuffController, MyStuffEditController, focus, log;
 
-  log = function(t) {
-    return console.log(t);
-  };
+  log = utils.log;
 
-  focus = function(id) {
-    return setTimeout(function() {
-      return $('#' + id).focus();
-    }, 100);
-  };
+  focus = utils.focus;
 
   MyStuffController = function($scope, stuffDAO) {
     $scope.stuffList = [];
@@ -24,10 +18,6 @@
     };
     $scope.stuff = new Stuff();
     $scope.addStuff = function() {
-      var ns;
-      log($scope.stuff);
-      ns = new Stuff($scope.stuff);
-      log(ns);
       $scope.stuffList.push(new Stuff($scope.stuff));
       stuffDAO.save($scope.stuffList);
       $scope.stuff = new Stuff();

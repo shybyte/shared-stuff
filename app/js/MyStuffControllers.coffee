@@ -1,10 +1,5 @@
-log = (t)->
-  console.log(t)
-
-focus = (id)->
-  setTimeout(->
-    $('#'+id).focus()
-  ,100)
+log = utils.log
+focus = utils.focus
 
 
 MyStuffController = ($scope,stuffDAO)->
@@ -22,9 +17,6 @@ MyStuffController = ($scope,stuffDAO)->
   $scope.stuff = new Stuff()
 
   $scope.addStuff = ()->
-    log($scope.stuff)
-    ns = new Stuff($scope.stuff)
-    log(ns)
     $scope.stuffList.push(new Stuff($scope.stuff))
     stuffDAO.save($scope.stuffList)
     $scope.stuff = new Stuff();

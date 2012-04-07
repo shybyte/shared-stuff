@@ -12,7 +12,7 @@
 </div>
 
 <ul class="unstyled stuffList">
-    <li ng-repeat="stuff in stuffList">
+    <li ng-repeat="stuff in stuffList | orderBy:'title'">
         <h3><a href="#/mystuff/{{stuff.id}}">{{stuff.title}}</a></h3>
         <p>{{stuff.description}}</p>
     </li>
