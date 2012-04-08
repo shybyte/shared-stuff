@@ -28,6 +28,16 @@ h2 {
     padding: 1em;
     margin-bottom: 1em;
 }
+
+.itemForm textarea,
+.itemForm input {
+    width: 98%;
+}
+
+.itemForm textarea {
+    height: 6em;
+}
+
 .editStuffButton {
 }
 
