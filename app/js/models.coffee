@@ -2,7 +2,13 @@ class Stuff
   constructor: (props)->
     @title = props?.title || ''
     @description = props?.description || ''
-    @id = ''+new Date().getTime()
+    time = new Date().getTime()
+    @id = props?.id || ''+time
+    @created = props?.created || time
+    @modified = props?.modified || @created
+
+  modify: ()->
+    @modified = new Date().getTime()
 
 
 class Friend

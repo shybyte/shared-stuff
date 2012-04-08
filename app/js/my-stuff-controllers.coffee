@@ -32,10 +32,11 @@ MyStuffEditController = ($scope,stuffDAO,$routeParams,$location)->
   $scope.stuff = new Stuff()
 
   stuffDAO.getItem($routeParams.id,(stuff)->
-    $scope.stuff = stuff
+    $scope.stuff = new Stuff(stuff)
   )
 
   $scope.save = ()->
+    $scope.stuff.modify()
     stuffDAO.saveItem($scope.stuff)
     $location.path('/mystuff');
 

@@ -10,5 +10,5 @@ angular.module('myApp', ['myApp.filters', 'myApp.services', 'myApp.directives'])
     $routeProvider.when('/friends/:id', {template: 'partials/friend-edit.html', controller: FriendEditController});
     $routeProvider.when('/friends-stuff', {template: 'partials/friends-stuff.html', controller: FriendsStuffController});
     $routeProvider.when('/about', {template: 'partials/about.html', controller: AboutController});
-    $routeProvider.otherwise({redirectTo: '/mystuff'});
+    $routeProvider.otherwise({redirectTo: '/friends-stuff'});
   }]);
