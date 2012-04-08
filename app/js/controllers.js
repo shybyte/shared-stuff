@@ -2,6 +2,6 @@
 /* App Controllers */
 
 
-function MyCtrl2() {
+function AboutController() {
 }
-MyCtrl2.$inject = [];
+AboutController.$inject = [];
