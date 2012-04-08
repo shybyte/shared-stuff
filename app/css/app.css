@@ -21,20 +21,13 @@ h2 {
     -webkit-transition: 0.5s ease-out;
 }
 
-.addStuffForm {
+.addItemForm {
     background: #f8f8f8;
     border-radius: 5px;
     border: 1px solid silver;
     padding: 1em;
     margin-bottom: 1em;
 }
-.addStuffForm {
-    transition: 2s;
-    -moz-transition: 2s; /* Firefox 4 */
-    -webkit-transition: 2s; /* Safari and Chrome */
-    -o-transition: 2s; /* Opera */
-}
-
 .editStuffButton {
 }
 

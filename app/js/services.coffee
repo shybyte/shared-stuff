@@ -31,4 +31,4 @@ class LocalStorageDAO
 angular.module('myApp.services', []).
   value('version', '0.1').
   value('stuffDAO', new LocalStorageDAO('myStuffList')).
-  value('friendsDAO', new LocalStorageDAO('myFriendsList'))
+  value('friendDAO', new LocalStorageDAO('myFriendsList'))
