@@ -1,0 +1,9 @@
+<h2>Friends' Stuff</h2>
+
+<ul class="unstyled stuffList">
+    <li ng-repeat="stuff in stuffList | orderBy:'title'">
+        <h3>{{stuff.title}}</h3>
+        <p class="description">{{stuff.description}}</p>
+        <div class="owner">{{stuff.owner.name}}</div>
+    </li>
+</ul>

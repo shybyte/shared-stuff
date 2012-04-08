@@ -46,3 +46,11 @@ h2 {
     left: auto;
     min-width: 100px;
 }
+
+.description {
+    margin: 0 0 0.3em 0;
+}
+
+.owner {
+    font-style: italic;
+}

@@ -1,34 +1,63 @@
 'use strict'
+log = utils.log
+focus = utils.focus
+
 
 class LocalStorageDAO
   constructor: (@key) ->
 
   readAllItems: () -> JSON.parse(localStorage.getItem(@key) || '[]')
-  findItemByID: (items,id) -> _.find(items,(it) -> it.id==id)
+  findItemByID: (items, id) -> _.find(items, (it) -> it.id == id)
 
   list: (callback) ->
-    callback(@readAllItems());
+    callback(@readAllItems())
 
-  getItem: (id,callback) ->
-    callback(_.find(@readAllItems(),(it) -> it.id==id));
+  getItem: (id, callback) ->
+    callback(_.find(@readAllItems(), (it) -> it.id == id))
 
   save: (allItems) ->
-    localStorage.setItem(@key,JSON.stringify(allItems))
+    localStorage.setItem(@key, JSON.stringify(allItems))
 
   saveItem: (item) ->
     items = @readAllItems()
-    oldItem = @findItemByID(items,item.id)
-    items[_.indexOf(items,oldItem)] = item;
+    oldItem = @findItemByID(items, item.id)
+    items[_.indexOf(items, oldItem)] = item
     @save(items)
 
   deleteItem: (id) ->
     items = @readAllItems()
-    oldItem = @findItemByID(items,id)
-    @save(_.without(items,oldItem))
+    oldItem = @findItemByID(items, id)
+    @save(_.without(items, oldItem))
 
 
+class FriendsStuffDAO
+  constructor: (@friendDAO) ->
+    @friendsStuffList = []
+
+  list: (callback) ->
+    self = @
+    @friendDAO.list (friends)->
+      for friend in friends
+        $.ajax({ url: friend.stuffUrl, success: (friendStuff) ->
+          self._updateWithLoadedItems(friend, friendStuff)
+          callback(self.friendsStuffList)
+        })
+
+  _updateWithLoadedItems: (friend, friendStuff)->
+    for stuff in friendStuff
+      stuff.owner = friend
+      existingItem = _.find(@friendsStuffList, (it) -> it.id == stuff.id)
+      if existingItem
+        @friendsStuffList[_.indexOf(@friendsStuffList, existingItem)] = stuff
+      else
+        @friendsStuffList.push(stuff)
+
+
+friendDAO = new LocalStorageDAO('myFriendsList')
+;
 
 angular.module('myApp.services', []).
-  value('version', '0.1').
-  value('stuffDAO', new LocalStorageDAO('myStuffList')).
-  value('friendDAO', new LocalStorageDAO('myFriendsList'))
+value('version', '0.1').
+value('stuffDAO', new LocalStorageDAO('myStuffList')).
+value('friendDAO', friendDAO).
+value('friendsStuffDAO', new FriendsStuffDAO(friendDAO))
