@@ -38,10 +38,11 @@ class FriendsStuffDAO
     self = @
     @friendDAO.list (friends)->
       for friend in friends
-        $.ajax({ url: friend.stuffUrl, success: (friendStuff) ->
-          self._updateWithLoadedItems(friend, friendStuff)
-          callback(self.friendsStuffList)
-        })
+        bindUpdateToFriend = (friend)->
+          (friendStuff) ->
+            self._updateWithLoadedItems(friend, friendStuff)
+            callback(self.friendsStuffList)
+        $.ajax({ url: friend.stuffUrl, success: bindUpdateToFriend(friend)})
 
   _updateWithLoadedItems: (friend, friendStuff)->
     for stuff in friendStuff
