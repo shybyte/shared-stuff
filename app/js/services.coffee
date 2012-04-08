@@ -34,6 +34,13 @@ class FriendsStuffDAO
   constructor: (@friendDAO) ->
     @friendsStuffList = []
 
+  listStuffByFriend: (friend,callback) ->
+    $.ajax({ url: friend.stuffUrl, success: (friendStuff) ->
+      for stuff in friendStuff
+        stuff.owner = friend
+      callback(friendStuff)
+    })
+
   list: (callback) ->
     self = @
     @friendDAO.list (friends)->

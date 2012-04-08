@@ -17,3 +17,11 @@
     <div ng-include src="'partials/friend-form.html'">Loading...</div>
     <button class="btn btn-primary" ng-click="save()">Save</button>
 </div>
+
+<ul class="unstyled stuffList friendStuffList">
+    <li ng-repeat="stuff in stuffList | orderBy:'title'">
+        <h3>{{stuff.title}}</h3>
+        <p class="description">{{stuff.description}}</p>
+        <div class="owner">{{ stuff.modified | date}}</div>
+    </li>
+</ul>

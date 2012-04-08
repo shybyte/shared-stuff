@@ -55,3 +55,7 @@ h2 {
     font-style: italic;
     opacity: 0.8;
 }
+
+.friendStuffList {
+    margin-top: 1em;
+}

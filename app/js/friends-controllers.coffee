@@ -28,12 +28,18 @@ FriendsController = ($scope,friendDAO)->
 FriendsController.$inject = ['$scope','friendDAO']
 
 
-FriendEditController = ($scope,friendDAO,$routeParams,$location)->
+FriendEditController = ($scope,friendDAO,friendsStuffDAO,$routeParams,$location)->
   $scope.friend = new Friend()
   $scope.editMode = false
+  $scope.stuffList = []
+
 
   friendDAO.getItem($routeParams.id,(friend)->
     $scope.friend = friend
+    friendsStuffDAO.listStuffByFriend(friend, (friendStuff) ->
+        $scope.stuffList = friendStuff
+        $scope.$digest()
+    )
   )
 
   $scope.save = ()->
@@ -48,7 +54,7 @@ FriendEditController = ($scope,friendDAO,$routeParams,$location)->
       friendDAO.deleteItem($scope.friend.id)
       $location.path('/friends');
 
-FriendEditController.$inject = ['$scope','friendDAO','$routeParams','$location']
+FriendEditController.$inject = ['$scope','friendDAO','friendsStuffDAO','$routeParams','$location']
 
 
 #export
