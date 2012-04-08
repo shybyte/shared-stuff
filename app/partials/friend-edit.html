@@ -3,11 +3,17 @@
         <span class="caret"></span>
     </a>
     <ul class="dropdown-menu">
+        <li><a ng-click="showEditMode()">Edit</a></li>
         <li><a ng-click="delete()">Delete</a></li>
     </ul>
 </div>
 <h2>{{friend.name}}</h2></div>
 
-<div ng-include src="'partials/friend-form.html'">Loading...</div>
+<div ng-hide="editMode">
+    Stuff URL: {{friend.stuffUrl}}
+</div>
 
-<button class="btn btn-primary" ng-click="save()">Save</button>
+<div ng-hide="!editMode">
+    <div ng-include src="'partials/friend-form.html'">Loading...</div>
+    <button class="btn btn-primary" ng-click="save()">Save</button>
+</div>

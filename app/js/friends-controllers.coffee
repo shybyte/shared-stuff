@@ -30,6 +30,7 @@ FriendsController.$inject = ['$scope','friendDAO']
 
 FriendEditController = ($scope,friendDAO,$routeParams,$location)->
   $scope.friend = new Friend()
+  $scope.editMode = false
 
   friendDAO.getItem($routeParams.id,(friend)->
     $scope.friend = friend
@@ -38,6 +39,9 @@ FriendEditController = ($scope,friendDAO,$routeParams,$location)->
   $scope.save = ()->
     friendDAO.saveItem($scope.friend)
     $location.path('/friends');
+
+  $scope.showEditMode = ()->
+    $scope.editMode = true
 
   $scope.delete = ()->
     if window.confirm("Do you really want to delete your friend \"#{$scope.friend.name}\"?")
