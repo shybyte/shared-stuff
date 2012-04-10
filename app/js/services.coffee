@@ -16,6 +16,7 @@ class LocalStorageDAO
     callback(_.find(@readAllItems(), (it) -> it.id == id))
 
   save: (allItems) ->
+    utils.cleanObjectFromAngular(allItems)
     localStorage.setItem(@key, JSON.stringify(allItems))
 
   saveItem: (item) ->

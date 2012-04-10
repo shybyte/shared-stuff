@@ -7,4 +7,11 @@ angular.module('myApp.directives', []).
     return function(scope, elm, attrs) {
       elm.text(version);
     };
-  }]);
+  }]).directive('appSelectOnFocus', [function(version) {
+    return function(scope, elm, attrs) {
+        elm.bind('focus', function(event) {
+            elm.select();
+        });
+    };
+}]);;
+

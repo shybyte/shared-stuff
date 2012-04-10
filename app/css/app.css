@@ -16,10 +16,21 @@ h2 {
     margin-bottom: 1.5em;
 }
 
+
+
+/* Left Menu */
+
+.nav .nav li {
+    margin-left: 1em;
+}
+
 .nav > li a{
     /*border: 1px solid #eee;*/
     -webkit-transition: 0.5s ease-out;
 }
+
+
+
 
 .addItemForm {
     background: #f8f8f8;
@@ -58,4 +69,10 @@ h2 {
 
 .friendStuffList {
     margin-top: 1em;
+}
+
+/* Export Import*/
+
+.inexport textarea {
+    height: 20em;
 }
