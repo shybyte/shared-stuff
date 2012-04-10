@@ -22,12 +22,19 @@ ExportController = ($scope, friendDAO, stuffDAO)->
 ExportController.$inject = ['$scope', 'friendDAO', 'stuffDAO']
 
 
-ImportController = ($scope)->
-  $scope.export = ->
-    $scope.exportedData = "Bla"
-    focus('exportTextarea')
+ImportController = ($scope, friendDAO, stuffDAO)->
+  $scope.importDataText = ''
+  $scope.startImport = ->
+    importData = JSON.parse($scope.importDataText)
+    if importData?.stuff
+      stuffDAO.save(importData.stuff)
+    if importData?.stuff
+      friendDAO.save(importData.friends)
+    window.alert("Import Done!")
+    $scope.importDataText = ''
 
-ImportController.$inject = ['$scope']
+
+ImportController.$inject = ['$scope', 'friendDAO', 'stuffDAO']
 
 
 #export
