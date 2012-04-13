@@ -3,6 +3,43 @@ log = utils.log
 focus = utils.focus
 
 
+rs = remoteStorageUtils
+
+class RemoteStorageDAO
+  constructor: (@category,@key) ->
+
+  readAllItems: (callback) ->
+    rs.getItem(@category,@key, (error,data)->
+      callback(JSON.parse(data || '[]'))
+    )
+
+  findItemByID: (items, id) -> _.find(items, (it) -> it.id == id)
+
+  list: (callback) ->
+    @readAllItems(callback)
+
+  getItem: (id, callback) ->
+    @readAllItems (items) ->
+      callback(_.find(items, (it) -> it.id == id))
+
+  save: (allItems,callback) ->
+    utils.cleanObjectFromAngular(allItems)
+    rs.setItem(@category,@key, JSON.stringify(allItems), callback)
+
+  saveItem: (item,callback) ->
+    self = @
+    @readAllItems (items) ->
+      oldItem = self.findItemByID(items, item.id)
+      items[_.indexOf(items, oldItem)] = item
+      self.save(items,callback)
+
+  deleteItem: (id,callback) ->
+    self = @
+    @readAllItems (items) ->
+      oldItem = self.findItemByID(items, id)
+      self.save(_.without(items, oldItem),callback)
+
+
 class LocalStorageDAO
   constructor: (@key) ->
 
@@ -67,6 +104,6 @@ friendDAO = new LocalStorageDAO('myFriendsList')
 
 angular.module('myApp.services', []).
 value('version', '0.1').
-value('stuffDAO', new LocalStorageDAO('myStuffList')).
+value('stuffDAO', new RemoteStorageDAO('sharedstuff','myStuffList')).
 value('friendDAO', friendDAO).
 value('friendsStuffDAO', new FriendsStuffDAO(friendDAO))

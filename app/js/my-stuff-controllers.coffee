@@ -9,6 +9,7 @@ MyStuffController = ($scope,stuffDAO)->
   stuffDAO.list (restoredStuffList)->
     $scope.stuffList = restoredStuffList
     $scope.isAddStuffFormHidden = $scope.stuffList.length>0
+    $scope.$digest();
 
   $scope.showAddForm = ()->
     $scope.isAddStuffFormHidden = false
@@ -18,7 +19,7 @@ MyStuffController = ($scope,stuffDAO)->
 
   $scope.addStuff = ()->
     $scope.stuffList.push(new Stuff($scope.stuff))
-    stuffDAO.save($scope.stuffList)
+    stuffDAO.save($scope.stuffList, ->)
     $scope.stuff = new Stuff();
     $scope.isAddStuffFormHidden = true
     focus('showAddStuffFormButton')
@@ -33,17 +34,21 @@ MyStuffEditController = ($scope,stuffDAO,$routeParams,$location)->
 
   stuffDAO.getItem($routeParams.id,(stuff)->
     $scope.stuff = new Stuff(stuff)
+    $scope.$digest();
   )
+
+  redirectToList = ->
+    $scope.$apply( ->
+      $location.path('/mystuff')
+    )
 
   $scope.save = ()->
     $scope.stuff.modify()
-    stuffDAO.saveItem($scope.stuff)
-    $location.path('/mystuff');
+    stuffDAO.saveItem($scope.stuff, redirectToList)
 
   $scope.delete = ()->
     if window.confirm("Do you really want to delete this stuff called \"#{$scope.stuff.title}\"?")
-      stuffDAO.deleteItem($scope.stuff.id)
-      $location.path('/mystuff');
+      stuffDAO.deleteItem($scope.stuff.id, redirectToList)
 
 MyStuffEditController.$inject = ['$scope','stuffDAO','$routeParams','$location']
 

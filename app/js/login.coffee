@@ -7,7 +7,9 @@ $ ->
       remoteStorageID = $('#remoteStorageID').val()
       log(remoteStorageID)
       rs.connect(remoteStorageID, (error, storageInfo)->
-          log(storageInfo)
+        rs.authorize(['public', 'sharedstuff'], (token) ->
+          window.location.replace('index-dev.html')
+        )
       )
     catch e
       log(e)

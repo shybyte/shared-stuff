@@ -2,6 +2,9 @@
 // ------------------------------------------------
 
 var remoteStorageUtils = (function() {
+    var onAuthorized;
+    var RS_TOKEN = 'remoteStorageToken'
+
 
     // `getStorageInfo` takes a user address ("user@host") and a callback as its
     // arguments. The callback will get an error code, and a `storageInfo`
@@ -28,7 +31,8 @@ var remoteStorageUtils = (function() {
 
     // This method opens a popup that sends the user to the OAuth dialog of the
     // remoteStorage provider.
-    function authorize(categories) {
+    function authorize(categories,onAuthorizedArg) {
+        onAuthorized = onAuthorizedArg;
         var storageInfo = JSON.parse(localStorage.getItem('userStorageInfo'));
         var redirectUri = location.protocol + '//' + location.host + '/app/remote-storage-login-popup.html';
 
@@ -46,8 +50,8 @@ var remoteStorageUtils = (function() {
     window.addEventListener('message', function(event) {
         if(event.origin == location.protocol +'//'+ location.host) {
             console.log('Received an OAuth token: ' + event.data);
-            localStorage.setItem('bearerToken', event.data);
-            helper.setAuthorizedState(true);
+            localStorage.setItem(RS_TOKEN,event.data);
+            onAuthorized(event.data);
         }
     }, false);
 
@@ -56,14 +60,14 @@ var remoteStorageUtils = (function() {
     // `getStorageInfo` call and the category we want to access. If the
     // category is any other than "public", we also have to provide the OAuth
     // token.
-    function getData(category, key, callback) {
+    function getItem(category, key, callback) {
         var storageInfo = JSON.parse(localStorage.getItem('userStorageInfo'));
         var client;
 
         if (category == 'public') {
             client = remoteStorage.createClient(storageInfo, 'public');
         } else {
-            var token = localStorage.getItem('bearerToken');
+            var token = localStorage.getItem(RS_TOKEN);
             client = remoteStorage.createClient(storageInfo, category, token);
         }
 
@@ -71,7 +75,7 @@ var remoteStorageUtils = (function() {
         // be invoked with an error code and the data.
         client.get(key, function(error, data) {
             if(error) {
-                alert('Could not find "' + key + '" in category "' + category + '" on the remoteStorage');
+                //alert('Could not find "' + key + '" in category "' + category + '" on the remoteStorage');
                 console.log(error);
             } else {
                 if (data == undefined) {
@@ -88,9 +92,9 @@ var remoteStorageUtils = (function() {
     // For saving data we use the client's `put` method. It takes a key, the
     // value and a callback. The callback will be called with an error code,
     // which is `null` on success.
-    function putData(category, key, value, callback) {
+    function setItem(category, key, value, callback) {
         var storageInfo = JSON.parse(localStorage.getItem('userStorageInfo'));
-        var token = localStorage.getItem('bearerToken');
+        var token = localStorage.getItem(RS_TOKEN);
         var client = remoteStorage.createClient(storageInfo, category, token);
 
         client.put(key, value, function(error) {
@@ -111,8 +115,8 @@ var remoteStorageUtils = (function() {
     return {
         connect:   connect,
         authorize: authorize,
-        getData:   getData,
-        putData:   putData
+        getItem:   getItem,
+        setItem:   setItem
     };
 
 })();
