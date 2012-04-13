@@ -105,7 +105,9 @@ var remoteStorageUtils = (function() {
                 console.log('Stored "' + value + '" for key "' + key + '" in "' + category + '" category');
             }
 
-            callback(error);
+            if (callback) {
+                callback(error);
+            }
         });
     }
 

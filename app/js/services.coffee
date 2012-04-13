@@ -2,6 +2,7 @@
 log = utils.log
 focus = utils.focus
 
+RS_CATEGORY = "sharedstuff"
 
 rs = remoteStorageUtils
 
@@ -99,11 +100,10 @@ class FriendsStuffDAO
         @friendsStuffList.push(stuff)
 
 
-friendDAO = new LocalStorageDAO('myFriendsList')
-;
+friendDAO = new RemoteStorageDAO(RS_CATEGORY,'myFriendsList')
 
 angular.module('myApp.services', []).
 value('version', '0.1').
-value('stuffDAO', new RemoteStorageDAO('sharedstuff','myStuffList')).
+value('stuffDAO', new RemoteStorageDAO(RS_CATEGORY,'myStuffList')).
 value('friendDAO', friendDAO).
 value('friendsStuffDAO', new FriendsStuffDAO(friendDAO))

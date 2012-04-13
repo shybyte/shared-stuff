@@ -9,6 +9,7 @@ FriendsController = ($scope,friendDAO)->
   friendDAO.list (restoredFriendList)->
     $scope.friendList = restoredFriendList
     $scope.isAddFriendFormHidden = $scope.friendList.length>0
+    $scope.$digest();
 
   $scope.showAddForm = ()->
     $scope.isAddFriendFormHidden = false
@@ -33,7 +34,6 @@ FriendEditController = ($scope,friendDAO,friendsStuffDAO,$routeParams,$location)
   $scope.editMode = false
   $scope.stuffList = []
 
-
   friendDAO.getItem($routeParams.id,(friend)->
     $scope.friend = friend
     friendsStuffDAO.listStuffByFriend(friend, (friendStuff) ->
@@ -42,17 +42,20 @@ FriendEditController = ($scope,friendDAO,friendsStuffDAO,$routeParams,$location)
     )
   )
 
+  redirectToList = ->
+    $scope.$apply( ->
+        $location.path('/friends')
+    )
+
   $scope.save = ()->
-    friendDAO.saveItem($scope.friend)
-    $location.path('/friends');
+    friendDAO.saveItem($scope.friend,redirectToList)
 
   $scope.showEditMode = ()->
     $scope.editMode = true
 
   $scope.delete = ()->
     if window.confirm("Do you really want to delete your friend \"#{$scope.friend.name}\"?")
-      friendDAO.deleteItem($scope.friend.id)
-      $location.path('/friends');
+      friendDAO.deleteItem($scope.friend.id,redirectToList)
 
 FriendEditController.$inject = ['$scope','friendDAO','friendsStuffDAO','$routeParams','$location']
 
