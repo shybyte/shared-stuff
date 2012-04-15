@@ -3,6 +3,7 @@ log = utils.log
 focus = utils.focus
 
 RS_CATEGORY = "sharedstuff"
+MY_STUFF_KEY = "myStuffList"
 
 rs = remoteStorageUtils
 
@@ -41,6 +42,12 @@ class RemoteStorageDAO
       self.save(_.without(items, oldItem),callback)
 
 
+class MyStuffDAO extends RemoteStorageDAO
+  save: (allItems,callback) ->
+    super(allItems,callback)
+    rs.setItem('public',@key, JSON.stringify(allItems), callback)
+
+
 class LocalStorageDAO
   constructor: (@key) ->
 
@@ -74,21 +81,30 @@ class FriendsStuffDAO
     @friendsStuffList = []
 
   listStuffByFriend: (friend,callback) ->
-    $.ajax({ url: friend.stuffUrl, success: (friendStuff) ->
-      for stuff in friendStuff
-        stuff.owner = friend
-      callback(friendStuff)
-    })
+    if friend.userAddress
+      remoteStorage.getStorageInfo(friend.userAddress, (error, storageInfo) ->
+        client = remoteStorage.createClient(storageInfo, 'public')
+        if storageInfo
+          client.get(MY_STUFF_KEY,(err,data) ->
+            if data
+              callback(JSON.parse(data || '[]'))
+            else
+              #log(err)
+              callback([])
+          )
+        else
+          log(error)
+      )
 
   list: (callback) ->
     self = @
     @friendDAO.list (friends)->
       for friend in friends
         bindUpdateToFriend = (friend)->
-          (friendStuff) ->
+          return (friendStuff) ->
             self._updateWithLoadedItems(friend, friendStuff)
             callback(self.friendsStuffList)
-        $.ajax({ url: friend.stuffUrl, success: bindUpdateToFriend(friend)})
+        self.listStuffByFriend(friend,bindUpdateToFriend(friend))
 
   _updateWithLoadedItems: (friend, friendStuff)->
     for stuff in friendStuff
@@ -104,6 +120,6 @@ friendDAO = new RemoteStorageDAO(RS_CATEGORY,'myFriendsList')
 
 angular.module('myApp.services', []).
 value('version', '0.1').
-value('stuffDAO', new RemoteStorageDAO(RS_CATEGORY,'myStuffList')).
+value('stuffDAO', new MyStuffDAO(RS_CATEGORY,MY_STUFF_KEY)).
 value('friendDAO', friendDAO).
 value('friendsStuffDAO', new FriendsStuffDAO(friendDAO))

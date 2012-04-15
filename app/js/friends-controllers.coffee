@@ -36,6 +36,7 @@ FriendEditController = ($scope,friendDAO,friendsStuffDAO,$routeParams,$location)
 
   friendDAO.getItem($routeParams.id,(friend)->
     $scope.friend = friend
+    $scope.$digest()
     friendsStuffDAO.listStuffByFriend(friend, (friendStuff) ->
         $scope.stuffList = friendStuff
         $scope.$digest()

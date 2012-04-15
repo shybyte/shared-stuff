@@ -14,7 +14,7 @@ class Stuff
 class Friend
   constructor: (props)->
     @name = props?.name || ''
-    @stuffUrl = props?.stuffUrl || ''
+    @userAddress = props?.userAddress || ''
     @id = ''+new Date().getTime()
 
 # export
