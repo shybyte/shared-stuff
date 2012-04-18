@@ -2,6 +2,8 @@
 /* App Controllers */
 
 
-function AboutController() {
+function AboutController($scope) {
+    utils.log($scope.session);
+    $scope.bla= "blase"
 }
-AboutController.$inject = [];
+AboutController.$inject = ['$scope'];

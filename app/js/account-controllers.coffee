@@ -3,6 +3,7 @@ focus = utils.focus
 
 
 AccountController = ($scope)->
+  log($scope.session)
   $scope.export = ->
     $scope.exportedData = "Bla"
     focus('exportTextarea')

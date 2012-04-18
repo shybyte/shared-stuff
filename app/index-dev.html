@@ -1,8 +1,8 @@
 <!doctype html>
-<html ng-app="myApp">
+<html ng-app="myApp" ng-controller="AppController">
 <head>
     <meta charset="utf-8">
-    <title>Shared Stuff</title>
+    <title>Shared Stuff {{session.userAddress}}</title>
     <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.css"/>
     <link rel="stylesheet" href="css/app.css"/>
 </head>
@@ -16,7 +16,7 @@
                     </a>
 
                 <ul class="nav pull-right">
-                    <li><a href="login.html">Logout</a></li>
+                    <li><a href="login.html">Logout {{session.userAddress}}</a></li>
                 </ul>
 
             </div>
@@ -52,6 +52,7 @@
 <script src="js/app.js"></script>
 <script src="js/gen/services.js"></script>
 <script src="js/controllers.js"></script>
+<script src="js/gen/app-controllers.js"></script>
 <script src="js/gen/my-stuff-controllers.js"></script>
 <script src="js/gen/friends-controllers.js"></script>
 <script src="js/gen/friends-stuff-controllers.js"></script>
