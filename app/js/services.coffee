@@ -145,6 +145,26 @@ class FriendsStuffDAO
             log(error)
       )
 
+  # returns a list of invalid attributes
+  validateFriend: (friend, callback) ->
+    if !utils.isBlank(friend.userAddress)
+      remoteStorage.getStorageInfo(friend.userAddress, (error, storageInfo) ->
+          if storageInfo
+            client = remoteStorage.createClient(storageInfo, 'public')
+            client.get(PUBLIC_PREFIX + friend.secret, (err, data) ->
+                if data
+                  callback([])
+                else
+                  log(err)
+                  callback(['secret'])
+            )
+          else
+            log(error)
+            callback(['userAddress'])
+      )
+    else
+      callback(['userAddress'])
+
   list: (callback) ->
     self = @
     @friendDAO.list (friends)->

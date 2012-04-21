@@ -2,9 +2,7 @@ log = utils.log
 focus = utils.focus
 isBlank = utils.isBlank
 
-isValid = (friend) -> !(isBlank(friend.name) || isBlank(friend.userAddress) || isBlank(friend.secret))
-
-FriendsController = ($scope,friendDAO)->
+FriendsController = ($scope,friendDAO,friendsStuffDAO)->
   $scope.friendList = []
   $scope.isAddFriendFormHidden = true
 
@@ -20,18 +18,24 @@ FriendsController = ($scope,friendDAO)->
   $scope.friend = new Friend()
 
   $scope.addFriend = ()->
-    if isValid($scope.friend)
-      $scope.friendList.push(new Friend($scope.friend))
-      friendDAO.save($scope.friendList)
-      $scope.friend = new Friend();
-      $scope.isAddFriendFormHidden = true
-      focus('showAddFriendFormButton')
-    else
-      $scope.showValidationErrors=true
+    $scope.friend.sanitize()
+    friendsStuffDAO.validateFriend($scope.friend, (errors)->
+      if errors.length==0
+        $scope.friendList.push(new Friend($scope.friend))
+        friendDAO.save($scope.friendList)
+        $scope.friend = new Friend();
+        $scope.isAddFriendFormHidden = true
+        $scope.$digest();
+        focus('showAddFriendFormButton')
+      else
+        $scope.showValidationErrors=true
+        window.alert(errors.join(',')+" seems invalid")
+    )
 
   focus('showAddFriendFormButton')
 
-FriendsController.$inject = ['$scope','friendDAO']
+
+FriendsController.$inject = ['$scope','friendDAO','friendsStuffDAO']
 
 
 FriendEditController = ($scope,friendDAO,friendsStuffDAO,$routeParams,$location)->
@@ -41,7 +45,7 @@ FriendEditController = ($scope,friendDAO,friendsStuffDAO,$routeParams,$location)
   $scope.showValidationErrors=true
 
   friendDAO.getItem($routeParams.id,(friend)->
-    $scope.friend = friend
+    $scope.friend = new Friend(friend)
     $scope.$digest()
     friendsStuffDAO.listStuffByFriend(friend, (friendStuff) ->
         $scope.stuffList = friendStuff
@@ -55,8 +59,14 @@ FriendEditController = ($scope,friendDAO,friendsStuffDAO,$routeParams,$location)
     )
 
   $scope.save = ()->
-    if isValid($scope.friend)
-      friendDAO.saveItem($scope.friend,redirectToList)
+    $scope.friend.sanitize()
+    friendsStuffDAO.validateFriend($scope.friend, (errors)->
+      if errors.length==0
+        friendDAO.saveItem($scope.friend,redirectToList)
+      else
+        window.alert(errors.join(',')+" seems invalid")
+    )
+
 
   $scope.showEditMode = ()->
     $scope.editMode = true
