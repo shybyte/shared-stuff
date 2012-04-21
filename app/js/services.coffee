@@ -1,6 +1,9 @@
 'use strict'
 log = utils.log
 focus = utils.focus
+doNothing = utils.doNothing
+randomString = utils.randomString
+defer= utils.defer
 
 RS_CATEGORY = "sharedstuff"
 MY_STUFF_KEY = "myStuffList"
@@ -8,12 +11,18 @@ MY_STUFF_KEY = "myStuffList"
 rs = remoteStorageUtils
 
 class RemoteStorageDAO
-  constructor: (@category,@key) ->
+  constructor: (@category, @key) ->
 
   readAllItems: (callback) ->
-    rs.getItem(@category,@key, (error,data)->
-      callback(JSON.parse(data || '[]'))
-    )
+    self = this
+    if self.allItemsCache
+      defer ->
+        callback(self.allItemsCache)
+    else
+      rs.getItem(@category, @key, (error, data)->
+          self.allItemsCache = JSON.parse(data || '[]')
+          callback(self.allItemsCache)
+      )
 
   findItemByID: (items, id) -> _.find(items, (it) -> it.id == id)
 
@@ -24,28 +33,34 @@ class RemoteStorageDAO
     @readAllItems (items) ->
       callback(_.find(items, (it) -> it.id == id))
 
-  save: (allItems,callback) ->
+  save: (allItems, callback) ->
     utils.cleanObjectFromAngular(allItems)
-    rs.setItem(@category,@key, JSON.stringify(allItems), callback)
+    rs.setItem(@category, @key, JSON.stringify(allItems), callback)
 
-  saveItem: (item,callback) ->
+  saveItem: (item, callback) ->
     self = @
     @readAllItems (items) ->
       oldItem = self.findItemByID(items, item.id)
-      items[_.indexOf(items, oldItem)] = item
-      self.save(items,callback)
+      if oldItem
+        items[_.indexOf(items, oldItem)] = item
+      else
+        items.push(item)
+      self.save(items, callback)
 
-  deleteItem: (id,callback) ->
+  deleteItem: (id, callback) ->
     self = @
     @readAllItems (items) ->
       oldItem = self.findItemByID(items, id)
-      self.save(_.without(items, oldItem),callback)
+      self.save(_.without(items, oldItem), callback)
 
 
 class MyStuffDAO extends RemoteStorageDAO
-  save: (allItems,callback) ->
-    super(allItems,callback)
-    rs.setItem('public',@key, JSON.stringify(allItems), callback)
+  constructor: (@category, @key, @settingsDAO) ->
+
+  save: (allItems, callback) ->
+    super(allItems, callback)
+    @settingsDAO.getSecret (secret)->
+      rs.setItem('public', secret, JSON.stringify(allItems), doNothing)
 
 
 class LocalStorageDAO
@@ -76,24 +91,43 @@ class LocalStorageDAO
     @save(_.without(items, oldItem))
 
 
+MY_SECRET_KEY = "mySecret"
+class SettingsDAO
+
+  constructor: (@storageDAO) ->
+  #
+
+  getSecret: (callback) ->
+    self = this
+    @storageDAO.getItem(MY_SECRET_KEY, (secret)->
+        if secret
+          callback(secret.value)
+        else
+          secret = 'mystuff_' + randomString(20)
+          self.storageDAO.saveItem({id: MY_SECRET_KEY, value: secret}, ()->
+              callback(secret)
+          )
+    )
+
+
 class FriendsStuffDAO
   constructor: (@friendDAO) ->
     @friendsStuffList = []
 
-  listStuffByFriend: (friend,callback) ->
+  listStuffByFriend: (friend, callback) ->
     if friend.userAddress
       remoteStorage.getStorageInfo(friend.userAddress, (error, storageInfo) ->
-        client = remoteStorage.createClient(storageInfo, 'public')
-        if storageInfo
-          client.get(MY_STUFF_KEY,(err,data) ->
-            if data
-              callback(JSON.parse(data || '[]'))
-            else
-              #log(err)
-              callback([])
-          )
-        else
-          log(error)
+          client = remoteStorage.createClient(storageInfo, 'public')
+          if storageInfo
+            client.get(MY_STUFF_KEY, (err, data) ->
+                if data
+                  callback(JSON.parse(data || '[]'))
+                else
+                #log(err)
+                  callback([])
+            )
+          else
+            log(error)
       )
 
   list: (callback) ->
@@ -104,7 +138,7 @@ class FriendsStuffDAO
           return (friendStuff) ->
             self._updateWithLoadedItems(friend, friendStuff)
             callback(self.friendsStuffList)
-        self.listStuffByFriend(friend,bindUpdateToFriend(friend))
+        self.listStuffByFriend(friend, bindUpdateToFriend(friend))
 
   _updateWithLoadedItems: (friend, friendStuff)->
     for stuff in friendStuff
@@ -116,10 +150,12 @@ class FriendsStuffDAO
         @friendsStuffList.push(stuff)
 
 
-friendDAO = new RemoteStorageDAO(RS_CATEGORY,'myFriendsList')
+friendDAO = new RemoteStorageDAO(RS_CATEGORY, 'myFriendsList')
+settingsDAO = new SettingsDAO(new RemoteStorageDAO(RS_CATEGORY, 'settings'))
 
 angular.module('myApp.services', []).
 value('version', '0.1').
-value('stuffDAO', new MyStuffDAO(RS_CATEGORY,MY_STUFF_KEY)).
+value('settingsDAO', settingsDAO).
+value('stuffDAO', new MyStuffDAO(RS_CATEGORY, MY_STUFF_KEY, settingsDAO)).
 value('friendDAO', friendDAO).
 value('friendsStuffDAO', new FriendsStuffDAO(friendDAO))
