@@ -3,10 +3,11 @@ log = utils.log
 focus = utils.focus
 doNothing = utils.doNothing
 randomString = utils.randomString
-defer= utils.defer
+defer = utils.defer
 
 RS_CATEGORY = "sharedstuff"
 MY_STUFF_KEY = "myStuffList"
+PUBLIC_PREFIX = "sharedstuff-"
 
 rs = remoteStorageUtils
 
@@ -15,13 +16,13 @@ class RemoteStorageDAO
 
   readAllItems: (callback) ->
     self = this
-    if self.allItemsCache
+    if self.dataCache
       defer ->
-        callback(self.allItemsCache)
+        callback(self.dataCache.items)
     else
       rs.getItem(@category, @key, (error, data)->
-          self.allItemsCache = JSON.parse(data || '[]')
-          callback(self.allItemsCache)
+          self.dataCache = JSON.parse(data || '{"items":[]}')
+          callback(self.dataCache.items)
       )
 
   findItemByID: (items, id) -> _.find(items, (it) -> it.id == id)
@@ -35,7 +36,10 @@ class RemoteStorageDAO
 
   save: (allItems, callback) ->
     utils.cleanObjectFromAngular(allItems)
-    rs.setItem(@category, @key, JSON.stringify(allItems), callback)
+    if !@dataCache
+      @dataCache = {}
+    @dataCache.items = allItems
+    rs.setItem(@category, @key, JSON.stringify(@dataCache), callback)
 
   saveItem: (item, callback) ->
     self = @
@@ -60,7 +64,7 @@ class MyStuffDAO extends RemoteStorageDAO
   save: (allItems, callback) ->
     super(allItems, callback)
     @settingsDAO.getSecret (secret)->
-      rs.setItem('public', secret, JSON.stringify(allItems), doNothing)
+      rs.setItem('public', PUBLIC_PREFIX+secret, JSON.stringify(allItems), doNothing)
 
 
 class LocalStorageDAO
@@ -93,21 +97,32 @@ class LocalStorageDAO
 
 MY_SECRET_KEY = "mySecret"
 class SettingsDAO
+  constructor: () ->
+    @settings = null
+    @key = 'settings'
 
-  constructor: (@storageDAO) ->
-  #
+  readSettings: (callback) ->
+    self = this
+    if self.settings
+      defer ->
+        callback(self.settings)
+    else
+      rs.getItem(RS_CATEGORY, self.key, (error, data)->
+          settings = JSON.parse(data || '{}')
+          self.settings = settings
+          if (!settings.secret)
+            settings.secret = randomString(20)
+            rs.setItem(RS_CATEGORY, self.key, JSON.stringify(settings), ()->
+                callback(settings)
+            )
+          else
+            callback(settings)
+      )
 
   getSecret: (callback) ->
     self = this
-    @storageDAO.getItem(MY_SECRET_KEY, (secret)->
-        if secret
-          callback(secret.value)
-        else
-          secret = 'mystuff_' + randomString(20)
-          self.storageDAO.saveItem({id: MY_SECRET_KEY, value: secret}, ()->
-              callback(secret)
-          )
-    )
+    @readSettings (settings)->
+      callback(settings.secret)
 
 
 class FriendsStuffDAO
@@ -119,7 +134,7 @@ class FriendsStuffDAO
       remoteStorage.getStorageInfo(friend.userAddress, (error, storageInfo) ->
           client = remoteStorage.createClient(storageInfo, 'public')
           if storageInfo
-            client.get(MY_STUFF_KEY, (err, data) ->
+            client.get(PUBLIC_PREFIX + friend.secret, (err, data) ->
                 if data
                   callback(JSON.parse(data || '[]'))
                 else
@@ -151,7 +166,7 @@ class FriendsStuffDAO
 
 
 friendDAO = new RemoteStorageDAO(RS_CATEGORY, 'myFriendsList')
-settingsDAO = new SettingsDAO(new RemoteStorageDAO(RS_CATEGORY, 'settings'))
+settingsDAO = new SettingsDAO()
 
 angular.module('myApp.services', []).
 value('version', '0.1').

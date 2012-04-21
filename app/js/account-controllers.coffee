@@ -2,14 +2,14 @@ log = utils.log
 focus = utils.focus
 
 
-AccountController = ($scope)->
-  log($scope.session)
-  $scope.export = ->
-    $scope.exportedData = "Bla"
-    focus('exportTextarea')
+AccountController = ($scope,settingsDAO)->
+  $scope.secret = "Loading secret ..."
+  settingsDAO.getSecret (secret) ->
+    $scope.secret = secret
+    $scope.$digest()
 
 
-AccountController.$inject = ['$scope']
+AccountController.$inject = ['$scope','settingsDAO']
 
 
 ExportController = ($scope, friendDAO, stuffDAO)->

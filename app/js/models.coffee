@@ -13,9 +13,10 @@ class Stuff
 
 class Friend
   constructor: (props)->
+    @id = props?.id || ''+new Date().getTime()
     @name = props?.name || ''
     @userAddress = props?.userAddress || ''
-    @id = ''+new Date().getTime()
+    @secret = props?.secret || ''
 
 # export
 this.Stuff = Stuff
