@@ -29,8 +29,12 @@ h2 {
     -webkit-transition: 0.5s ease-out;
 }
 
+/* Forms */
 
-
+.error {
+    color: red;
+    margin-bottom: 1em;
+}
 
 .addItemForm {
     background: #f8f8f8;

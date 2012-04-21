@@ -7,10 +7,10 @@
         <li><a ng-click="delete()">Delete</a></li>
     </ul>
 </div>
-<h2>{{friend.name}}</h2></div>
+<h2>{{friend.name || "No Name"}}</h2></div>
 
 <div ng-hide="editMode">
-    User Address: {{friend.userAddress}}
+    Remote Storage Address: {{friend.userAddress}}
 </div>
 
 <div ng-hide="!editMode">

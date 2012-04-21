@@ -6,8 +6,8 @@
         <li><a ng-click="delete()">Delete</a></li>
     </ul>
 </div>
-<h2>{{stuff.title}}</h2></div>
+<h2>{{stuff.title || "Untitled"}}</h2></div>
 
-<div ng-include src="'partials/my-stuff-form.html'">Toll</div>
+<div ng-include src="'partials/my-stuff-form.html'">Loading...</div>
 
 <button class="btn btn-primary" ng-click="save()">Save</button>

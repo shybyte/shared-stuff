@@ -13,7 +13,7 @@
 
 <ul class="unstyled friendList">
     <li ng-repeat="friend in friendList | orderBy:'title'">
-        <h3><a href="#/friends/{{friend.id}}">{{friend.name}}</a></h3>
+        <h3><a href="#/friends/{{friend.id}}">{{friend.name || "No Name"}}</a></h3>
         <p>{{friend.userAddress}}</p>
     </li>
 </ul>

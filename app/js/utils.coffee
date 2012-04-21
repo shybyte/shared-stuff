@@ -32,6 +32,8 @@ randomString = (length)->
 doNothing = ->
   #
 
+
+isBlank = (str) -> !str || /^\s*$/.test(str)
 #
 #  // Math.random()-based RNG.  All platforms, very fast, unknown quality
 #  var _rndBytes = new Array(16);
@@ -67,3 +69,4 @@ this.utils =
   randomString: randomString
   doNothing: doNothing
   defer: defer
+  isBlank: isBlank

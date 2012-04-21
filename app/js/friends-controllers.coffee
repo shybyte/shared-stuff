@@ -1,6 +1,8 @@
 log = utils.log
 focus = utils.focus
+isBlank = utils.isBlank
 
+isValid = (friend) -> !(isBlank(friend.name) || isBlank(friend.userAddress) || isBlank(friend.secret))
 
 FriendsController = ($scope,friendDAO)->
   $scope.friendList = []
@@ -18,11 +20,14 @@ FriendsController = ($scope,friendDAO)->
   $scope.friend = new Friend()
 
   $scope.addFriend = ()->
-    $scope.friendList.push(new Friend($scope.friend))
-    friendDAO.save($scope.friendList)
-    $scope.friend = new Friend();
-    $scope.isAddFriendFormHidden = true
-    focus('showAddFriendFormButton')
+    if isValid($scope.friend)
+      $scope.friendList.push(new Friend($scope.friend))
+      friendDAO.save($scope.friendList)
+      $scope.friend = new Friend();
+      $scope.isAddFriendFormHidden = true
+      focus('showAddFriendFormButton')
+    else
+      $scope.showValidationErrors=true
 
   focus('showAddFriendFormButton')
 
@@ -33,6 +38,7 @@ FriendEditController = ($scope,friendDAO,friendsStuffDAO,$routeParams,$location)
   $scope.friend = new Friend()
   $scope.editMode = false
   $scope.stuffList = []
+  $scope.showValidationErrors=true
 
   friendDAO.getItem($routeParams.id,(friend)->
     $scope.friend = friend
@@ -49,7 +55,8 @@ FriendEditController = ($scope,friendDAO,friendsStuffDAO,$routeParams,$location)
     )
 
   $scope.save = ()->
-    friendDAO.saveItem($scope.friend,redirectToList)
+    if isValid($scope.friend)
+      friendDAO.saveItem($scope.friend,redirectToList)
 
   $scope.showEditMode = ()->
     $scope.editMode = true

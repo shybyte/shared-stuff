@@ -1,6 +1,8 @@
 log = utils.log
 focus = utils.focus
 
+isValid = (stuff)-> !utils.isBlank(stuff.title)
+
 
 MyStuffController = ($scope,stuffDAO)->
   $scope.stuffList = []
@@ -18,11 +20,14 @@ MyStuffController = ($scope,stuffDAO)->
   $scope.stuff = new Stuff()
 
   $scope.addStuff = ()->
-    $scope.stuffList.push(new Stuff($scope.stuff))
-    stuffDAO.save($scope.stuffList, ->)
-    $scope.stuff = new Stuff();
-    $scope.isAddStuffFormHidden = true
-    focus('showAddStuffFormButton')
+    if isValid($scope.stuff)
+      $scope.stuffList.push(new Stuff($scope.stuff))
+      stuffDAO.save($scope.stuffList, ->)
+      $scope.stuff = new Stuff();
+      $scope.isAddStuffFormHidden = true
+      focus('showAddStuffFormButton')
+    else
+      $scope.showValidationErrors=true
 
   focus('showAddStuffFormButton')
 
@@ -43,8 +48,11 @@ MyStuffEditController = ($scope,stuffDAO,$routeParams,$location)->
     )
 
   $scope.save = ()->
-    $scope.stuff.modify()
-    stuffDAO.saveItem($scope.stuff, redirectToList)
+    if isValid($scope.stuff)
+      $scope.stuff.modify()
+      stuffDAO.saveItem($scope.stuff, redirectToList)
+    else
+      $scope.showValidationErrors=true
 
   $scope.delete = ()->
     if window.confirm("Do you really want to delete this stuff called \"#{$scope.stuff.title}\"?")
