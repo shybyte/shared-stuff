@@ -1,19 +1,30 @@
 log = utils.log
 focus = utils.focus
+focusAndSelect = utils.focusAndSelect
 isBlank = utils.isBlank
 
-FriendsController = ($scope,friendDAO,friendsStuffDAO)->
+
+
+FriendsController = ($scope,friendDAO,friendsStuffDAO,settingsDAO,$routeParams)->
   $scope.friendList = []
   $scope.isAddFriendFormHidden = true
+  $scope.isInviteFriendFormHidden = true
+  session = $scope.session
+  $scope.inviteUrl = 'Loading...'
 
   friendDAO.list (restoredFriendList)->
     $scope.friendList = restoredFriendList
     $scope.isAddFriendFormHidden = $scope.friendList.length>0
+    if ($routeParams.userAddress)
+      $scope.friend = new Friend({userAddress:$routeParams.userAddress,secret:$routeParams.secret})
+      $scope.isAddFriendFormHidden = false
     $scope.$digest();
 
   $scope.showAddForm = ()->
     $scope.isAddFriendFormHidden = false
+    $scope.isInviteFriendFormHidden = true
     focus('name')
+
 
   $scope.friend = new Friend()
 
@@ -31,11 +42,29 @@ FriendsController = ($scope,friendDAO,friendsStuffDAO)->
         $scope.showValidationErrors=true
         window.alert(errors.join(',')+" seems invalid")
     )
+  $scope.inviteFriend = ->
+    $scope.isInviteFriendFormHidden = false
+    $scope.isAddFriendFormHidden = true
+    settingsDAO.getSecret (secret) ->
+      $scope.inviteUrl =  buildInviteFriendUrl(session.userAddress,secret)
+      $scope.$digest();
+      focusAndSelect('inviteUrl')
+
+  $scope.closeInviteFriend = ->
+    $scope.isInviteFriendFormHidden = true
 
   focus('showAddFriendFormButton')
 
 
-FriendsController.$inject = ['$scope','friendDAO','friendsStuffDAO']
+buildInviteFriendUrl = (userAddress,secret) ->
+  l = window.location
+  part1 = l.protocol+'//'+l.host+ l.pathname
+  hash = '/addFriend/'+userAddress+'/'+secret
+  return part1+'#'+hash
+
+
+
+FriendsController.$inject = ['$scope','friendDAO','friendsStuffDAO','settingsDAO','$routeParams']
 
 
 FriendEditController = ($scope,friendDAO,friendsStuffDAO,$routeParams,$location)->

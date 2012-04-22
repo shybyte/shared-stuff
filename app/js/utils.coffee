@@ -6,7 +6,12 @@ log = (t)->
 focus = (id)->
   setTimeout(->
       $('#' + id).focus()
-    , 100)
+  , 100)
+
+focusAndSelect = (id)->
+  setTimeout(->
+    $('#' + id).focus().select
+  , 100)
 
 defer = (callback)->
   setTimeout(->
@@ -70,3 +75,4 @@ this.utils =
   doNothing: doNothing
   defer: defer
   isBlank: isBlank
+  focusAndSelect: focusAndSelect

@@ -2,16 +2,17 @@ log = utils.log
 focus = utils.focus
 
 
-AppController = ($scope)->
+AppController = ($scope,settingsDAO)->
   $scope.session = {
       userAddress: localStorage.getItem('userAddress')
   }
   $scope.logout = ->
     remoteStorageUtils.deleteToken();
     window.location.replace('login.html')
+  #settingsDAO.readSettings (settings)->
+  #  $scope.session.settings = settings
 
-
-AppController.$inject = ['$scope']
+AppController.$inject = ['$scope','settingsDAO']
 
 
 #export
