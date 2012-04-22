@@ -1,5 +1,11 @@
 'use strict';
 
+remoteStorageUtils.isLoggedOn(function (isLoggedOn) {
+    if (!isLoggedOn) {
+        sessionStorage.setItem('targetHref',window.location.href)
+        window.location.replace('login.html');
+    }
+});
 
 // Declare app level module which depends on filters, and services
 angular.module('myApp', ['myApp.filters', 'myApp.services', 'myApp.directives']).

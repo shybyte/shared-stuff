@@ -2,6 +2,7 @@ log = utils.log
 rs = remoteStorageUtils
 
 $ ->
+  log(sessionStorage.getItem('targetHref'))
   $('#loginForm').submit ->
     try
       remoteStorageID = $('#remoteStorageID').val()
@@ -9,7 +10,9 @@ $ ->
       rs.connect(remoteStorageID, (error, storageInfo)->
         rs.authorize(['public', 'sharedstuff'], (token) ->
           localStorage.setItem('userAddress',remoteStorageID);
-          window.location.replace('index-dev.html')
+          targetUrl = sessionStorage.getItem('targetHref') || 'index-dev.html';
+          sessionStorage.removeItem('targetHref');
+          window.location.replace(targetUrl)
         )
       )
     catch e
