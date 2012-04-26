@@ -1,13 +1,27 @@
 <!doctype html>
-<html ng-app="myApp">
+<html ng-controller="AppController">
 <head>
     <meta charset="utf-8">
-    <title>Shared Stuff</title>
-    <link rel="stylesheet" href="css/app-with-libs.min.css"/>
+    <title>Shared Stuff {{session.userAddress}}</title>
+    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" href="css/app.css"/>
 </head>
 <body>
 <header>
-    <h1>Shared Stuff</h1>
+    <div class="navbar">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="brand" href="#">
+                    Shared Stuff
+                </a>
+
+                <ul class="nav pull-right">
+                    <li><a href="#" ng-click="logout()">Logout {{session.userAddress}}</a></li>
+                </ul>
+
+            </div>
+        </div>
+    </div>
 </header>
 
 <div class="container">
@@ -25,8 +39,37 @@
 
     </div>
 </div>
+<script type="text/javascript" src="lib/labjs/LAB.src.js"></script>
 
-<script src="js/shared-stuff-with-libs.min.js"></script>
+<script type="text/javascript">
+
+    var mode="dev";
+
+    if (mode == "dev") {
+    $LAB.script("lib/jquery.js").wait()
+            .script("lib/bootstrap/js/bootstrap.js")
+            .script("lib/underscore.js")
+            .script("lib/remoteStorage.js")
+            .script("lib/angular/angular.js")
+            .script("js/gen/utils.js")
+            .script("js/remote-storage-utils.js")
+            .script("js/gen/models.js")
+            .script("js/gen/services.js")
+            .script("js/controllers.js")
+            .script("js/gen/app-controllers.js")
+            .script("js/gen/my-stuff-controllers.js")
+            .script("js/gen/friends-controllers.js")
+            .script("js/gen/friends-stuff-controllers.js")
+            .script("js/gen/account-controllers.js")
+            .script("js/filters.js")
+            .script("js/directives.js")
+            .wait()
+            .script("js/app.js");
+    } else {
+
+    }
+</script>
+
 
 </body>
 </html>
