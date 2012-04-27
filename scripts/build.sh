@@ -14,7 +14,7 @@ cp -r $SOURCE/css $TARGET
 cp -r $SOURCE/img $TARGET
 cp    $LIB/bootstrap/img/* $TARGET/img
 cp -r $SOURCE/partials $TARGET
-cp $SOURCE/index.html $TARGET
+$BASE_DIR/replacedev.js $SOURCE/index.html >$TARGET/index.html
 cp -r $LIB  $TARGET
 #cp $LIB/labjs/LAB.js  $TARGET/lib/labjs
 #cp -r $LIB/bootstrap  $TARGET/lib

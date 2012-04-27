@@ -3,8 +3,14 @@
 <head>
     <meta charset="utf-8">
     <title>Shared Stuff {{session.userAddress}}</title>
-    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.css"/>
-    <link rel="stylesheet" href="css/app.css"/>
+    <!-- if dev -->
+        <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.css"/>
+        <link rel="stylesheet" href="css/app.css"/>
+    <!-- endif -->
+
+    <!-- if !dev
+        <link rel="stylesheet" href="css/app-with-libs.min.css"/>
+    endif -->
 </head>
 <body>
 <header>
@@ -41,11 +47,8 @@
 </div>
 <script type="text/javascript" src="lib/labjs/LAB.js"></script>
 
+<!-- if dev -->
 <script type="text/javascript">
-
-    var mode="prod";
-
-    if (mode == "dev") {
     $LAB.script("lib/jquery.js").wait()
             .script("lib/bootstrap/js/bootstrap.js")
             .script("lib/underscore.js")
@@ -65,13 +68,16 @@
             .script("js/directives.js")
             .wait()
             .script("js/app.js");
-    } else {
-        $LAB.script("http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js")
-                .script("js/local-libs.min.js").wait()
-                .script("js/shared-stuff.min.js");
-    }
 </script>
+<!-- endif -->
 
+<!-- if !dev
+<script type="text/javascript">
+    $LAB.script("http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js")
+            .script("js/local-libs.min.js").wait()
+            .script("js/shared-stuff.min.js");
+</script>
+endif -->
 
 </body>
 </html>
