@@ -34,7 +34,7 @@ var remoteStorageUtils = (function () {
     function authorize(categories, onAuthorizedArg) {
         onAuthorized = onAuthorizedArg;
         var storageInfo = JSON.parse(localStorage.getItem(RS_INFO));
-        var redirectUri = location.protocol + '//' + location.host + '/app/remote-storage-login-popup.html';
+        var redirectUri = location.href.replace(/\/[^\/]*$/,"")+'/remote-storage-login-popup.html';
 
         // `createOAuthAddress` takes the `storageInfo`, the categories that we
         // intend to access and a redirect URI that the storage provider sends the

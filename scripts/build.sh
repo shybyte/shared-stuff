@@ -5,9 +5,9 @@ LIB=$SOURCE/lib
 
 echo "Make Dirs ..."
 mkdir $TARGET
-mkdir $TARGET/js
-#mkdir $TARGET/lib
-#mkdir $TARGET/lib/labjs
+#mkdir $TARGET/js
+mkdir $TARGET/lib
+mkdir $TARGET/lib/labjs
 
 echo "Copy stuff..."
 cp -r $SOURCE/css $TARGET
@@ -15,7 +15,11 @@ cp -r $SOURCE/img $TARGET
 cp    $LIB/bootstrap/img/* $TARGET/img
 cp -r $SOURCE/partials $TARGET
 $BASE_DIR/replacedev.js $SOURCE/index.html >$TARGET/index.html
+cp  $SOURCE/login.html $TARGET
+cp  $SOURCE/remote-storage-login-popup.html $TARGET
+cp -r $SOURCE/js  $TARGET
 cp -r $LIB  $TARGET
+
 #cp $LIB/labjs/LAB.js  $TARGET/lib/labjs
 #cp -r $LIB/bootstrap  $TARGET/lib
 
