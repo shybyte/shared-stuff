@@ -15,7 +15,6 @@ cp -r $SOURCE/img $TARGET
 cp    $LIB/bootstrap/img/* $TARGET/img
 cp -r $SOURCE/partials $TARGET
 $BASE_DIR/replacedev.js $SOURCE/index.html >$TARGET/index.html
-cp  $SOURCE/login.html $TARGET
 cp  $SOURCE/remote-storage-login-popup.html $TARGET
 cp -r $SOURCE/js  $TARGET
 cp -r $LIB  $TARGET
@@ -28,7 +27,7 @@ JS=$SOURCE/js
 JSG=$SOURCE/js/gen
 java -jar $BASE_DIR/buildtools/closure-compiler.jar $JSG/utils.js $JS/remote-storage-utils.js $JSG/models.js $JSG/services.js \
  $JSG/app-controllers.js $JSG/friends-controllers.js $JSG/my-stuff-controllers.js $JSG/friends-stuff-controllers.js  $JS/controllers.js \
- $JS/directives.js $JS/filters.js $JSG/account-controllers.js $JS/app.js --js_output_file $TARGET/js/shared-stuff.min.js
+ $JS/directives.js $JS/filters.js $JSG/account-controllers.js $JSG/login.js $JS/app.js --js_output_file $TARGET/js/shared-stuff.min.js
 
 #cat $JSG/utils.js $JS/remote-storage-utils.js $JSG/models.js $JSG/services.js \
 # $JSG/app-controllers.js $JSG/friends-controllers.js $JSG/my-stuff-controllers.js $JSG/friends-stuff-controllers.js  $JS/controllers.js \
