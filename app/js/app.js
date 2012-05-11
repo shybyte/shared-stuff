@@ -1,17 +1,11 @@
 'use strict';
 
-remoteStorageUtils.isLoggedOn(function (isLoggedOn) {
-    if (!isLoggedOn) {
-        sessionStorage.setItem('targetHref',window.location.href)
-        window.location.replace('login.html');
-    }
-});
-
-
-
 // Declare app level module which depends on filters, and services
 angular.module('myApp', ['myApp.filters', 'myApp.services', 'myApp.directives']).
   config(['$routeProvider', function($routeProvider) {
+
+    $routeProvider.when('/login', {template: 'partials/login.html', controller: LoginController});
+
     $routeProvider.when('/mystuff', {template: 'partials/my-stuff.html', controller: MyStuffController});
     $routeProvider.when('/mystuff/:id', {template: 'partials/my-stuff-edit.html', controller: MyStuffEditController});
 

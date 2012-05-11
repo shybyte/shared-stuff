@@ -22,7 +22,7 @@
                 </a>
 
                 <ul class="nav pull-right">
-                    <li><a href="#" ng-click="logout()">Logout {{session.userAddress}}</a></li>
+                    <li ng-hide="!session.isLoggedIn"><a href="" ng-click="logout()">Logout {{session.userAddress}}</a></li>
                 </ul>
 
             </div>
@@ -33,7 +33,7 @@
 <div class="container">
     <div class="row">
         <div class="span2">
-            <div ng-include src="'partials/left-menu.html'">Loading...</div>
+            <div ng-include src="'partials/left-menu.html'" ng-hide="!session.isLoggedIn">Loading...</div>
         </div>
         <div class="span8">
             <div ng-view></div>
@@ -60,6 +60,7 @@
             .script("js/gen/services.js")
             .script("js/controllers.js")
             .script("js/gen/app-controllers.js")
+            .script("js/gen/login.js")
             .script("js/gen/my-stuff-controllers.js")
             .script("js/gen/friends-controllers.js")
             .script("js/gen/friends-stuff-controllers.js")

@@ -1,20 +1,32 @@
 log = utils.log
 rs = remoteStorageUtils
 
-$ ->
-  log(sessionStorage.getItem('targetHref'))
-  $('#loginForm').submit ->
+LoginController = ($scope,settingsDAO)->
+  log("Login")
+  $scope.session.isLoggedIn = false
+  $scope.userAddress = "shybyte@owncube.com"
+
+  $scope.login = ->
     try
-      remoteStorageID = $('#remoteStorageID').val()
-      log(remoteStorageID)
-      rs.connect(remoteStorageID, (error, storageInfo)->
-        rs.authorize(['public', 'sharedstuff'], (token) ->
-          localStorage.setItem('userAddress',remoteStorageID);
-          targetUrl = sessionStorage.getItem('targetHref') || 'index.html';
-          sessionStorage.removeItem('targetHref');
-          window.location.replace(targetUrl)
+      userAddress = $scope.userAddress
+      log("userAddress:"+userAddress)
+      if userAddress
+        rs.connect(userAddress, (error, storageInfo)->
+          rs.authorize(['public', 'sharedstuff'], (token) ->
+            localStorage.setItem('userAddress',userAddress);
+            targetUrl = sessionStorage.getItem('targetHref') || 'index.html';
+            sessionStorage.removeItem('targetHref');
+            window.location.replace(targetUrl)
+            $scope.setLoggenOn()
+          )
         )
-      )
+      else
+        alert("Please enter a remote storage id!")
     catch e
       log(e)
-    return false
+
+
+LoginController.$inject = ['$scope','settingsDAO']
+
+#export
+this.LoginController = LoginController

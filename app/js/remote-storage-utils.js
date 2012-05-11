@@ -34,7 +34,10 @@ var remoteStorageUtils = (function () {
     function authorize(categories, onAuthorizedArg) {
         onAuthorized = onAuthorizedArg;
         var storageInfo = JSON.parse(localStorage.getItem(RS_INFO));
-        var redirectUri = location.href.replace(/\/[^\/]*$/,"")+'/remote-storage-login-popup.html';
+        var hrefWithoutHash = location.href.substring(0,location.href.length-location.hash.length);
+        var path = hrefWithoutHash.replace(/\/[^\/]*$/,"")
+        var redirectUri = path+'/remote-storage-login-popup.html';
+        console.log("RedirectUrl: " + redirectUri);
 
         // `createOAuthAddress` takes the `storageInfo`, the categories that we
         // intend to access and a redirect URI that the storage provider sends the
@@ -99,7 +102,8 @@ var remoteStorageUtils = (function () {
 
         client.put(key, value, function (error) {
             if (error) {
-                alert('Could not store "' + key + '" in "' + category + '" category');
+                //alert('Could not store "' + key + '" in "' + category + '" category');
+                console.log('Could not store "' + key + '" in "' + category + '" category');
                 console.log(error);
             } else {
                 console.log('Stored "' + value + '" for key "' + key + '" in "' + category + '" category');

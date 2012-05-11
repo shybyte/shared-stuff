@@ -2,17 +2,39 @@ log = utils.log
 focus = utils.focus
 
 
-AppController = ($scope,settingsDAO)->
-  $scope.session = {
-      userAddress: localStorage.getItem('userAddress')
-  }
+AppController = ($scope,$location,settingsDAO)->
   $scope.logout = ->
     remoteStorageUtils.deleteToken();
-    window.location.replace('login.html')
+    $location.path('/login')
+
+  $scope.setLoggenOn = ->
+    $scope.session = {
+      userAddress: localStorage.getItem('userAddress')
+      isLoggedIn: true
+    }
+    $scope.$digest();
+
+  remoteStorageUtils.isLoggedOn (isLoggedOn) ->
+    if (isLoggedOn)
+      $scope.setLoggenOn()
+    else
+      $scope.session = {
+        userAddress: null
+        isLoggedIn: false
+      }
+      href = window.location.href
+      loginHash = '#login'
+      if href.indexOf(loginHash)>0
+        sessionStorage.setItem('targetHref',window.location.href)
+      else
+        sessionStorage.setItem('targetHref','#')
+      window.location.replace(loginHash);
+
+
   #settingsDAO.readSettings (settings)->
   #  $scope.session.settings = settings
 
-AppController.$inject = ['$scope','settingsDAO']
+AppController.$inject = ['$scope','$location','settingsDAO']
 
 
 #export
